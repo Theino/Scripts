@@ -1,0 +1,32 @@
+program new;
+var CreateBtn := LoadBitmap("WurmBitmaps\CreateButton.bmp");
+var ContinueBtn := LoadBitmap("WurmBitmaps\ContinueButton.bmp");
+
+
+var xClickRand : integer;
+var yClickRand : integer;
+var xCreateBtn : integer;
+var yCreateBtn : integer;
+var foundBitmapCreate := False;
+var foundBitmapContinue := False;
+begin
+  while true do
+  begin
+    foundBitmapCreate := FindBitmapToleranceIn(CreateBtn, xCreateBtn, yCreateBtn,0,0,900,800,10);
+    foundBitmapContinue := FindBitmapToleranceIn(ContinueBtn, xCreateBtn, yCreateBtn,0,0,900,800,10);
+    if foundBitmapCreate OR foundBitmapContinue then
+    begin
+      WriteLn(xCreateBtn, " ", yCreateBtn);
+      xClickRand := xCreateBtn + random(0,10);
+      yClickRand := yCreateBtn + random(0,4);
+      MoveMouse(xClickRand,yClickRand);
+      wait(50);
+      ClickMouse(xClickRand,yClickRand,mouse_Left);
+    end else
+    begin
+      WriteLn("Create Button not found");
+    end;
+    wait(14000+random(0,1000));
+  end;
+  FreeBitmap(CreateBtn);
+end.

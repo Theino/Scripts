@@ -1,0 +1,307 @@
+program new;
+var
+LeatherIcon := LoadBitmap("WurmBitmaps\LeatherIcon.bmp");
+LeatherKnifeIcon := LoadBitmap("WurmBitmaps\LeatherKnifeIcon.bmp");
+MalletIcon := LoadBitmap("WurmBitmaps\MalletIcon.bmp");
+NeedleIcon := LoadBitmap("WurmBitmaps\NeedleIcon.bmp");
+AwlIcon := LoadBitmap("WurmBitmaps\AwlIcon.bmp");
+
+FullEnergyBar := LoadBitmap("WurmBitmaps\FullEnergyBar.bmp");
+ToolBeltLeather := LoadBitmap("WurmBitmaps\ToolBeltLeather.bmp");
+InventoryTitle := LoadBitmap("WurmBitmaps\InventoryTitle.bmp");
+ActiveActionBar := LoadBitmap("WurmBitmaps\ActiveActionBar.bmp");
+ZeroPointZeroZero := LoadBitmap("WurmBitmaps\ZeroPointZeroZero.bmp");
+Leather := LoadBitmap("WurmBitmaps\leather.bmp");
+LeatherHideOnToolBelt := LoadBitmap("WurmBitmaps\LeatherHideOnToolBelt.bmp");
+LeatherHideOnToolBeltHighlighted := LoadBitmap("WurmBitmaps\LeatherHideOnToolBeltHighlighted.bmp");
+QLTitle := LoadBitmap("WurmBitmaps\QLTitle.bmp");
+HighlightedLeatherStack := LoadBitmap("WurmBitmaps\HighlightedLeatherStack.bmp");
+BulkStorageBinTitle := LoadBitmap("WurmBitmaps\BulkStorageBinTitle.bmp");
+StartOfToolBelt := LoadBitmap("WurmBitmaps\StartOfToolBelt.bmp");
+FirstHalfOfStamina := LoadBitmap("WurmBitmaps\FirstHalfOfStamina.bmp");
+ToolBeltLeatherRare := LoadBitmap("WurmBitmaps\ToolBeltLeatherRare.bmp");
+LeatherBelt := LoadBitmap("WurmBitmaps\LeatherBelt.bmp");
+Drink := LoadBitmap("WurmBitmaps\Drink.bmp");
+WaterHighlighted := LoadBitmap("WurmBitmaps\WaterHighlighted.bmp");
+Saddle := LoadBitmap("WurmBitmaps\Saddle.bmp");
+StuddedLeatherBoot := LoadBitmap("WurmBitmaps\StuddedLeatherBoot.bmp");
+StuddedLeatherGlove := LoadBitmap("WurmBitmaps\StuddedLeatherGlove.bmp");
+StuddedLeatherJacket := LoadBitmap("WurmBitmaps\StuddedLeatherJacket.bmp");
+StuddedLeatherPants := LoadBitmap("WurmBitmaps\StuddedLeatherPants.bmp");
+StuddedLeatherSleeve := LoadBitmap("WurmBitmaps\StuddedLeatherSleeve.bmp");
+
+foundInventoryTitle : Boolean;
+foundToolBeltLeather : Boolean;
+foundToolBeltLeatherRare : Boolean;
+foundLeatherBelt : Boolean;
+foundIcon : Boolean;
+foundNoDmg : Boolean;
+foundLeather : Boolean;
+foundQLTitle : Boolean;
+foundSaddle : Boolean;
+foundTemp : Boolean;
+
+xInventoryLocation : Integer;
+yInventoryLocation : Integer;
+
+xIconLocation : Integer;
+yIconLocation : Integer;
+
+xToolBeltLeatherLocation : Integer;
+yToolBeltLeatherLocation : Integer;
+xToolBeltLeatherRareLocation : Integer;
+yToolBeltLeatherRareLocation : Integer;
+xLeatherBeltLocation : Integer;
+yLeatherBeltLocation : Integer;
+xSaddleLocation : Integer;
+ySaddleLocation : Integer;
+
+xLeatherLocation : Integer;
+yLeatherLocation : Integer;
+
+xBulkStorageBinLocation : Integer;
+yBulkStorageBinLocation : Integer;
+
+xTemp : Integer;
+yTemp : Integer;
+
+xToolBeltLocation : Integer;
+yToolBeltLocation : Integer;
+
+xWater : Integer;
+yWater : Integer;
+
+xDrink : Integer;
+yDrink : Integer;
+
+xQLTitle : Integer;
+yQLTitle : Integer;
+
+clientWidth : Integer;
+clientHeight : Integer;
+
+i : Integer;
+waterCounter : Integer;
+
+FoundFirstHalfOfStamina : Boolean;
+FoundActiveActionBar : Boolean;
+FoundHighlightedWater : Boolean;
+FoundDrink : Boolean;
+
+
+begin
+  GetClientDimensions(clientWidth, clientHeight);
+  clientWidth -= 1;
+  clientHeight -= 1;
+  wait(500);
+  MoveMouse(110,810);
+  wait(500);
+  ClickMouse(110,810,mouse_Left);
+  wait(1000);
+  i := 0;
+  waterCounter := 1;
+  while true do
+  begin
+    if waterCounter mod 90 = 0 then
+    begin
+      waterCounter := random(0,5);
+      FoundHighlightedWater := FindBitmapToleranceIn(WaterHighlighted, xWater, yWater, 0, 0, clientWidth, clientHeight, 5);
+      if FoundHighlightedWater then
+      begin
+        MoveMouse(xWater + random(0,5), yWater);
+        wait(500);
+        ClickMouse(xWater + random(0,5), yWater, mouse_Right);
+        wait(1500 + random(0, 500));
+        FoundDrink := FindBitmapToleranceIn(Drink, xDrink, yDrink, 0, 0, clientWidth, clientHeight, 5);
+        if FoundDrink then
+        begin
+          MoveMouse(xDrink + random(0,5), yDrink);
+          wait(500);
+          ClickMouse(xDrink + random(0,5), yDrink, mouse_Left);
+          wait(4000 + random(0, 1000));
+        end else
+        begin
+          WriteLn("Drink option not found");
+          TerminateScript();
+        end;
+      end else
+      begin
+        WriteLn("Water not found");
+        TerminateScript();
+      end;
+    end;
+    waterCounter := waterCounter + 1;
+    foundInventoryTitle := FindBitmapToleranceIn(InventoryTitle, xInventoryLocation, yInventoryLocation,0,0,clientWidth,clientHeight,5);
+    if foundInventoryTitle then
+    begin
+      if (NOT FindBitmapToleranceIn(LeatherHideOnToolBeltHighlighted, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5)) AND (NOT FindBitmapToleranceIn(LeatherHideOnToolBelt, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5)) then
+      begin
+        if FindBitmapToleranceIn(BulkStorageBinTitle,xBulkStorageBinLocation,yBulkStorageBinLocation,0,0,clientWidth,clientHeight,5) then
+        begin
+          if FindBitmapToleranceIn(HighlightedLeatherStack, xTemp, yTemp, xBulkStorageBinLocation, yBulkStorageBinLocation, xBulkStorageBinLocation + 300, clientHeight, 5) then
+          begin
+            MoveMouse(xTemp,yTemp);
+            wait(100 + random(0,100));
+            HoldMouse(xTemp,yTemp,mouse_Left);
+            wait(200 + random(0,100));
+            MoveMouse(xInventoryLocation + 50, yInventoryLocation + 60);
+            wait(600 + random(0,100));
+            ReleaseMouse(xInventoryLocation + 50, yInventoryLocation + 65, mouse_Left);
+            wait(1000 + random(0,100));
+            SendKeys("1" + chr(13), 100, 100);
+            wait(1000 + random(0,600));
+            if FindBitmapToleranceIn(Leather, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5) AND FindBitmapToleranceIn(StartOfToolBelt, xToolBeltLocation, yToolBeltLocation, 0, 0, clientWidth, clientHeight, 5)  then
+            begin
+              MoveMouse(xTemp,yTemp);
+              wait(300 + random(0,100));
+              HoldMouse(xTemp,yTemp,mouse_Left);
+              wait(300 + random(0,100));
+              WriteLn("ToolBeltStart is ", xToolBeltLocation, " ", yToolBeltLocation);
+              MoveMouse(xToolBeltLocation + 190, yToolBeltLocation + 10);
+              wait(300 + random(0, 100));
+              ReleaseMouse(xToolBeltLocation + 190, yToolBeltLocation + 10, mouse_Left);
+              wait(1000);
+            end else
+            begin
+              WriteLn("Leather or toolbelt not found, exiting");
+              TerminateScript();
+            end;
+          end else
+          begin
+            WriteLn("Highlighted leather stack not found, exiting");
+            TerminateScript();
+          end;
+        end else
+        begin
+          WriteLn("Bulk storage bin title not found, exiting");
+          TerminateScript();
+        end;
+      end;
+      WriteLn("Found inventory at: ", xInventoryLocation, " ", yInventoryLocation);
+
+      foundToolBeltLeather := FindBitmapToleranceIn(ToolBeltLeather, xToolBeltLeatherLocation, yToolBeltLeatherLocation, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5) OR foundToolBeltLeatherRare OR foundLeatherBelt;
+
+
+      if NOT foundToolBeltLeatherRare then
+        yToolBeltLeatherLocation := 9000;
+
+      foundTemp := FindBitmapToleranceIn(Saddle, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(LeatherBelt, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(ToolBeltLeatherRare, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(StuddedLeatherBoot, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(StuddedLeatherGlove, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(StuddedLeatherJacket, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(StuddedLeatherPants, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(StuddedLeatherSleeve, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+
+      if foundToolBeltLeather then
+      begin
+        WriteLn("Found toolbelt at: ", xToolBeltLeatherLocation, " ", yToolBeltLeatherLocation);
+        foundNoDmg := FindBitmapToleranceIn(AwlIcon, xTemp, yTemp, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+5,2);
+        foundIcon := FindBitmapToleranceIn(AwlIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+7,5);
+        if foundIcon then
+        begin
+          WriteLn("Found awl icon at: ", xIconLocation, " ", yIconLocation);
+          SendKeys("1",20,20);
+        end;
+        foundIcon := FindBitmapToleranceIn(LeatherKnifeIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+7,5);
+        if foundIcon then
+        begin
+          WriteLn("Found leather knife icon at: ", xIconLocation, " ", yIconLocation);
+          SendKeys("2",20,20);
+        end;
+        foundIcon := FindBitmapToleranceIn(MalletIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+7,5);
+        if foundIcon then
+        begin
+          WriteLn("Found mallet icon at: ", xIconLocation, " ", yIconLocation);
+          SendKeys("3",20,20);
+        end;
+        foundIcon := FindBitmapToleranceIn(NeedleIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+7,5);
+        if foundIcon then
+        begin
+          WriteLn("Found needle icon at: ", xIconLocation, " ", yIconLocation);
+          SendKeys("4",20,20);
+        end;
+        foundIcon := FindBitmapToleranceIn(LeatherIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+7,5);
+        if foundIcon then
+        begin
+          WriteLn("Found leather icon at: ", xIconLocation, " ", yIconLocation);
+          SendKeys("5",20,20);
+        end;
+        wait(50+random(0,50));
+        MoveMouse(xToolBeltLeatherLocation + random(0,20), yToolBeltLeatherLocation + random(0,2));
+        wait(50+random(0,50));
+        if NOT foundNoDmg then
+          SendKeys("f",20,20);
+        wait(50 + random(0,50));
+        SendKeys("t",20,20);
+        wait(200+random(0,100));
+        MoveMouse(random(150,160),random(800,820));
+        if NOT foundNoDmg then
+          wait(4000);
+        wait(1000+random(0,1000));
+      end;
+    end;
+    FoundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+    FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    WriteLn("Waiting: Stamina Found ", FoundFirstHalfOfStamina, " action bar ", FoundActiveActionBar);
+    while (NOT FoundFirstHalfOfStamina) OR FoundActiveActionBar do
+    begin
+      WriteLn("Waiting: Stamina Found ", FoundFirstHalfOfStamina, " action bar ", FoundActiveActionBar);
+      wait(500);
+      FoundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+      FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    end;
+    i += 1;
+    if i = 15 then
+    begin
+      i := random(0,3);
+      foundQLTitle := FindBitmapToleranceIn(QLTitle, xQLTitle, yQLTitle, xInventoryLocation, yInventoryLocation, clientWidth, yInventoryLocation + 50,2);
+      if foundQLTitle then
+      begin
+        MoveMouse(xQLTitle, yQLTitle);
+        wait(50 + random(0,50));
+        ClickMouse(xQLTitle, yQLTitle, mouse_Left);
+        wait(100 + random(0,100));
+        ClickMouse(xQLTitle, yQLTitle, mouse_Left);
+        wait(1000 + random(0,500));
+      end else
+      begin
+        WriteLn("QL Title not found, exiting");
+        TerminateScript();
+      end;
+    end;
+  end;
+end.
