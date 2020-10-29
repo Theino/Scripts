@@ -1,34 +1,47 @@
 program new;
-var
-LeatherIcon := LoadBitmap("Scripts\WurmBitmaps\LeatherIcon.bmp");
-LeatherKnifeIcon := LoadBitmap("Scripts\WurmBitmaps\LeatherKnifeIcon.bmp");
-MalletIcon := LoadBitmap("Scripts\WurmBitmaps\MalletIcon.bmp");
-NeedleIcon := LoadBitmap("Scripts\WurmBitmaps\NeedleIcon.bmp");
-AwlIcon := LoadBitmap("Scripts\WurmBitmaps\AwlIcon.bmp");
+const
+UsingLinux := True;
 
-FullEnergyBar := LoadBitmap("Scripts\WurmBitmaps\FullEnergyBar.bmp");
-ToolBeltLeather := LoadBitmap("Scripts\WurmBitmaps\ToolBeltLeather.bmp");
-InventoryTitle := LoadBitmap("Scripts\WurmBitmaps\InventoryTitle.bmp");
-ActiveActionBar := LoadBitmap("Scripts\WurmBitmaps\ActiveActionBar.bmp");
-ZeroPointZeroZero := LoadBitmap("Scripts\WurmBitmaps\ZeroPointZeroZero.bmp");
-Leather := LoadBitmap("Scripts\WurmBitmaps\leather.bmp");
-LeatherHideOnToolBelt := LoadBitmap("Scripts\WurmBitmaps\LeatherHideOnToolBelt.bmp");
-LeatherHideOnToolBeltHighlighted := LoadBitmap("Scripts\WurmBitmaps\LeatherHideOnToolBeltHighlighted.bmp");
-QLTitle := LoadBitmap("Scripts\WurmBitmaps\QLTitle.bmp");
-HighlightedLeatherStack := LoadBitmap("Scripts\WurmBitmaps\HighlightedLeatherStack.bmp");
-BulkStorageBinTitle := LoadBitmap("Scripts\WurmBitmaps\BulkStorageBinTitle.bmp");
-StartOfToolBelt := LoadBitmap("Scripts\WurmBitmaps\StartOfToolBelt.bmp");
-FirstHalfOfStamina := LoadBitmap("Scripts\WurmBitmaps\FirstHalfOfStamina.bmp");
-ToolBeltLeatherRare := LoadBitmap("Scripts\WurmBitmaps\ToolBeltLeatherRare.bmp");
-LeatherBelt := LoadBitmap("Scripts\WurmBitmaps\LeatherBelt.bmp");
-Drink := LoadBitmap("Scripts\WurmBitmaps\Drink.bmp");
-WaterHighlighted := LoadBitmap("Scripts\WurmBitmaps\WaterHighlighted.bmp");
-Saddle := LoadBitmap("Scripts\WurmBitmaps\Saddle.bmp");
-StuddedLeatherBoot := LoadBitmap("Scripts\WurmBitmaps\StuddedLeatherBoot.bmp");
-StuddedLeatherGlove := LoadBitmap("Scripts\WurmBitmaps\StuddedLeatherGlove.bmp");
-StuddedLeatherJacket := LoadBitmap("Scripts\WurmBitmaps\StuddedLeatherJacket.bmp");
-StuddedLeatherPants := LoadBitmap("Scripts\WurmBitmaps\StuddedLeatherPants.bmp");
-StuddedLeatherSleeve := LoadBitmap("Scripts\WurmBitmaps\StuddedLeatherSleeve.bmp");
+
+var
+
+BitmapsFolderLinux := "Scripts/WurmBitmaps/";
+BitmapsFolderWindows := "Scripts\WurmBitmaps\";
+
+if UsingLinux then
+  BitmapsFolder := BitmapsFolderLinux;
+else
+  BitmapsFolder := BitmapsFolderWindows;
+
+LeatherIcon := LoadBitmap(BitmapsFolder + "LeatherIcon.bmp");
+LeatherKnifeIcon := LoadBitmap(BitmapsFolder + "LeatherKnifeIcon.bmp");
+MalletIcon := LoadBitmap(BitmapsFolder + "MalletIcon.bmp");
+NeedleIcon := LoadBitmap(BitmapsFolder + "NeedleIcon.bmp");
+AwlIcon := LoadBitmap(BitmapsFolder + "AwlIcon.bmp");
+
+FullEnergyBar := LoadBitmap(BitmapsFolder + "FullEnergyBar.bmp");
+ToolBeltLeather := LoadBitmap(BitmapsFolder + "ToolBeltLeather.bmp");
+InventoryTitle := LoadBitmap(BitmapsFolder + "InventoryTitle.bmp");
+ActiveActionBar := LoadBitmap(BitmapsFolder + "ActiveActionBar.bmp");
+ZeroPointZeroZero := LoadBitmap(BitmapsFolder + "ZeroPointZeroZero.bmp");
+Leather := LoadBitmap(BitmapsFolder + "leather.bmp");
+LeatherHideOnToolBelt := LoadBitmap(BitmapsFolder + "LeatherHideOnToolBelt.bmp");
+LeatherHideOnToolBeltHighlighted := LoadBitmap(BitmapsFolder + "LeatherHideOnToolBeltHighlighted.bmp");
+QLTitle := LoadBitmap(BitmapsFolder + "QLTitle.bmp");
+HighlightedLeatherStack := LoadBitmap(BitmapsFolder + "HighlightedLeatherStack.bmp");
+BulkStorageBinTitle := LoadBitmap(BitmapsFolder + "BulkStorageBinTitle.bmp");
+StartOfToolBelt := LoadBitmap(BitmapsFolder + "StartOfToolBelt.bmp");
+FirstHalfOfStamina := LoadBitmap(BitmapsFolder + "FirstHalfOfStamina.bmp");
+ToolBeltLeatherRare := LoadBitmap(BitmapsFolder + "ToolBeltLeatherRare.bmp");
+LeatherBelt := LoadBitmap(BitmapsFolder + "LeatherBelt.bmp");
+Drink := LoadBitmap(BitmapsFolder + "Drink.bmp");
+WaterHighlighted := LoadBitmap(BitmapsFolder + "WaterHighlighted.bmp");
+Saddle := LoadBitmap(BitmapsFolder + "Saddle.bmp");
+StuddedLeatherBoot := LoadBitmap(BitmapsFolder + "StuddedLeatherBoot.bmp");
+StuddedLeatherGlove := LoadBitmap(BitmapsFolder + "StuddedLeatherGlove.bmp");
+StuddedLeatherJacket := LoadBitmap(BitmapsFolder + "StuddedLeatherJacket.bmp");
+StuddedLeatherPants := LoadBitmap(BitmapsFolder + "StuddedLeatherPants.bmp");
+StuddedLeatherSleeve := LoadBitmap(BitmapsFolder + "StuddedLeatherSleeve.bmp");
 
 foundInventoryTitle : Boolean;
 foundToolBeltLeather : Boolean;
