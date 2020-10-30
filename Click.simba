@@ -1,19 +1,43 @@
 program new;
-var CreateBtn := LoadBitmap("WurmBitmaps\CreateButton.bmp");
-var ContinueBtn := LoadBitmap("WurmBitmaps\ContinueButton.bmp");
+
+const
+UsingLinux := True;
+
+var
+BitmapsFolderLinux := "Scripts/WurmBitmaps/";
+BitmapsFolderWindows := "Scripts\WurmBitmaps\";
+
+CreateButton : Int32;
+ContinueButton : Int32;
+
+BitmapsFolder : String;
 
 
-var xClickRand : integer;
-var yClickRand : integer;
-var xCreateBtn : integer;
-var yCreateBtn : integer;
-var foundBitmapCreate := False;
-var foundBitmapContinue := False;
+xClickRand : integer;
+yClickRand : integer;
+xCreateBtn : integer;
+yCreateBtn : integer;
+foundBitmapCreate := False;
+foundBitmapContinue := False;
+
+
 begin
+
+  if UsingLinux then
+  begin
+    BitmapsFolder := BitmapsFolderLinux;
+  end else
+  begin
+    BitmapsFolder := BitmapsFolderWindows;
+  end;
+
+  CreateButton := LoadBitmap(BitmapsFolder + "CreateButton.bmp");
+  ContinueButton := LoadBitmap(BitmapsFolder + "ContinueButton.bmp");
+
   while true do
   begin
-    foundBitmapCreate := FindBitmapToleranceIn(CreateBtn, xCreateBtn, yCreateBtn,0,0,900,800,10);
-    foundBitmapContinue := FindBitmapToleranceIn(ContinueBtn, xCreateBtn, yCreateBtn,0,0,900,800,10);
+    foundBitmapCreate := FindBitmapToleranceIn(CreateButton, xCreateBtn, yCreateBtn,0,0,900,800,10);
+    foundBitmapContinue := FindBitmapToleranceIn(ContinueButton, xCreateBtn, yCreateBtn,0,0,900,800,10);
     if foundBitmapCreate OR foundBitmapContinue then
     begin
       WriteLn(xCreateBtn, " ", yCreateBtn);
@@ -26,7 +50,7 @@ begin
     begin
       WriteLn("Create Button not found");
     end;
-    wait(14000+random(0,1000));
+    wait(11000+random(0,1000));
   end;
-  FreeBitmap(CreateBtn);
+  FreeBitmap(CreateButton);
 end.
