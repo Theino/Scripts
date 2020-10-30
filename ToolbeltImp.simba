@@ -106,7 +106,7 @@ begin
 
   if UsingLinux then
   begin
-    BitmapsFolder := BitmapsFolderLinux;
+  BitmapsFolder := BitmapsFolderLinux;
   end else
   begin
     BitmapsFolder := BitmapsFolderWindows;
@@ -278,7 +278,7 @@ begin
       begin
         WriteLn("Found toolbelt at: ", xToolBeltLeatherLocation, " ", yToolBeltLeatherLocation);
         foundNoDmg := FindBitmapToleranceIn(AwlIcon, xTemp, yTemp, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+5,2);
-        foundIcon := FindBitmapToleranceIn(AwlIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-5, clientWidth, yToolBeltLeatherLocation+7,5);
+        foundIcon := FindBitmapToleranceIn(AwlIcon, xIconLocation, yIconLocation, xToolBeltLeatherLocation, yToolBeltLeatherLocation-7, clientWidth, yToolBeltLeatherLocation+10,7);
         if foundIcon then
         begin
           WriteLn("Found awl icon at: ", xIconLocation, " ", yIconLocation);
