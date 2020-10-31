@@ -39,6 +39,7 @@ StuddedLeatherGlove : Int32;
 StuddedLeatherJacket : Int32;
 StuddedLeatherPants : Int32;
 StuddedLeatherSleeve : Int32;
+LeatherCap : Int32;
 
 foundInventoryTitle : Boolean;
 foundToolBeltLeather : Boolean;
@@ -140,6 +141,7 @@ begin
   StuddedLeatherJacket := LoadBitmap(BitmapsFolder + "StuddedLeatherJacket.bmp");
   StuddedLeatherPants := LoadBitmap(BitmapsFolder + "StuddedLeatherPants.bmp");
   StuddedLeatherSleeve := LoadBitmap(BitmapsFolder + "StuddedLeatherSleeve.bmp");
+  LeatherCap := LoadBitmap(BitmapsFolder + "LeatherCap.bmp");
 
   wait(500);
   MoveMouse(110,810);
@@ -269,6 +271,11 @@ begin
           yToolBeltLeatherLocation := yTemp;
 
       foundTemp := FindBitmapToleranceIn(StuddedLeatherSleeve, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(LeatherCap, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
