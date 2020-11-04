@@ -162,12 +162,12 @@ begin
         wait(500);
         ClickMouse(xWater + random(0,5), yWater, mouse_Right);
         wait(1500 + random(0, 500));
-        FoundDrink := FindBitmapToleranceIn(Drink, xDrink, yDrink, 0, 0, clientWidth, clientHeight, 5);
+        FoundDrink := FindBitmapToleranceIn(Drink, xDrink, yDrink, 0, 0, clientWidth, clientHeight, 10);
         if FoundDrink then
         begin
-          MoveMouse(xDrink + random(0,5), yDrink);
+          MoveMouse(xDrink + 20+ random(0,5), yDrink);
           wait(500);
-          ClickMouse(xDrink + random(0,5), yDrink, mouse_Left);
+          ClickMouse(xDrink + 5 + random(0,5), yDrink, mouse_Left);
           wait(4000 + random(0, 1000));
         end else
         begin
@@ -194,9 +194,9 @@ begin
             wait(100 + random(0,100));
             HoldMouse(xTemp,yTemp,mouse_Left);
             wait(200 + random(0,100));
-            MoveMouse(xInventoryLocation + 50, yInventoryLocation + 60);
+            MoveMouse(xInventoryLocation + 50, yInventoryLocation + 50);
             wait(600 + random(0,100));
-            ReleaseMouse(xInventoryLocation + 50, yInventoryLocation + 65, mouse_Left);
+            ReleaseMouse(xInventoryLocation + 50, yInventoryLocation + 50, mouse_Left);
             wait(1000 + random(0,100));
             SendKeys("1" + chr(13), 100, 100);
             wait(1000 + random(0,600));
@@ -232,7 +232,7 @@ begin
       foundToolBeltLeather := FindBitmapToleranceIn(ToolBeltLeather, xToolBeltLeatherLocation, yToolBeltLeatherLocation, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5) OR foundToolBeltLeatherRare OR foundLeatherBelt;
 
 
-      if NOT foundToolBeltLeatherRare then
+      if NOT foundToolBeltLeather then
         yToolBeltLeatherLocation := 9000;
 
       foundTemp := FindBitmapToleranceIn(Saddle, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
@@ -279,7 +279,6 @@ begin
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
-
 
       if foundToolBeltLeather then
       begin
