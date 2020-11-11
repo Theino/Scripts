@@ -8,7 +8,11 @@ var
 BitmapsFolderLinux := "Scripts/WurmBitmaps/";
 BitmapsFolderWindows := "Scripts\WurmBitmaps\";
 
+WurmLogsFolderWindows := "C:\Users\Theino\wurm\players\Usmaan\logs\";
+WurmLogsFolderLinux := "";
+
 BitmapsFolder : String;
+WurmLogsFolder : String;
 
 LeatherIcon : Int32;
 LeatherKnifeIcon : Int32;
@@ -40,6 +44,7 @@ StuddedLeatherJacket : Int32;
 StuddedLeatherPants : Int32;
 StuddedLeatherSleeve : Int32;
 LeatherCap : Int32;
+LeatherBarding : Int32;
 
 foundInventoryTitle : Boolean;
 foundToolBeltLeather : Boolean;
@@ -99,6 +104,13 @@ FoundActiveActionBar : Boolean;
 FoundHighlightedWater : Boolean;
 FoundDrink : Boolean;
 
+EventFile : Integer;
+SkillsFile : Integer;
+
+RecentSkillsString : String;
+
+LastLockpicked : UInt64;
+
 
 begin
   GetClientDimensions(clientWidth, clientHeight);
@@ -107,11 +119,20 @@ begin
 
   if UsingLinux then
   begin
-  BitmapsFolder := BitmapsFolderLinux;
+    BitmapsFolder := BitmapsFolderLinux;
   end else
   begin
     BitmapsFolder := BitmapsFolderWindows;
   end;
+
+  if UsingLinux then
+  begin
+    WurmLogsFolder := WurmLogsFolderLinux;
+  end else
+  begin
+    WurmLogsFolder := WurmLogsFolderWindows;
+  end;
+
   LeatherIcon := LoadBitmap(BitmapsFolder + "LeatherIcon.bmp");
   LeatherKnifeIcon := LoadBitmap(BitmapsFolder + "LeatherKnifeIcon.bmp");
   MalletIcon := LoadBitmap(BitmapsFolder + "MalletIcon.bmp");
@@ -142,12 +163,29 @@ begin
   StuddedLeatherPants := LoadBitmap(BitmapsFolder + "StuddedLeatherPants.bmp");
   StuddedLeatherSleeve := LoadBitmap(BitmapsFolder + "StuddedLeatherSleeve.bmp");
   LeatherCap := LoadBitmap(BitmapsFolder + "LeatherCap.bmp");
+  LeatherBarding := LoadBitmap(BitmapsFolder + "leatherBarding.bmp");
+
+
+
 
   wait(500);
   MoveMouse(110,810);
   wait(500);
   ClickMouse(110,810,mouse_Left);
   wait(1000);
+  WriteLn(WurmLogsFolder + "_Skills.2020-11.txt");
+  SkillsFile := OpenFile(WurmLogsFolder + "_Skills.2020-11.txt", true);
+  if SkillsFile = -1 then
+  begin
+    WriteLn("Skills file not opening, terminating script");
+    TerminateScript();
+  end;
+  SetFileCharPointer(SkillsFile, -400, 2); //set seek to certain number before end
+  ReadFileString(SkillsFile, RecentSkillsString, 400);
+  WriteLn(RecentSkillsString);
+
+
+
   i := 0;
   waterCounter := 1;
   while true do
@@ -184,7 +222,7 @@ begin
     foundInventoryTitle := FindBitmapToleranceIn(InventoryTitle, xInventoryLocation, yInventoryLocation,0,0,clientWidth,clientHeight,5);
     if foundInventoryTitle then
     begin
-      if (NOT FindBitmapToleranceIn(LeatherHideOnToolBeltHighlighted, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5)) AND (NOT FindBitmapToleranceIn(LeatherHideOnToolBelt, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5)) then
+      if (NOT FindBitmapToleranceIn(LeatherHideOnToolBeltHighlighted, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 40)) AND (NOT FindBitmapToleranceIn(LeatherHideOnToolBelt, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 40)) then
       begin
         if FindBitmapToleranceIn(BulkStorageBinTitle,xBulkStorageBinLocation,yBulkStorageBinLocation,0,0,clientWidth,clientHeight,5) then
         begin
@@ -276,6 +314,11 @@ begin
           yToolBeltLeatherLocation := yTemp;
 
       foundTemp := FindBitmapToleranceIn(LeatherCap, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
+
+      foundTemp := FindBitmapToleranceIn(LeatherBarding, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;

@@ -33,7 +33,7 @@ begin
 
   CreateButton := LoadBitmap(BitmapsFolder + "CreateButton.bmp");
   ContinueButton := LoadBitmap(BitmapsFolder + "ContinueButton.bmp");
-
+  wait(2000);
   while true do
   begin
     foundBitmapCreate := FindBitmapToleranceIn(CreateButton, xCreateBtn, yCreateBtn,0,0,900,800,10);
@@ -50,7 +50,8 @@ begin
     begin
       WriteLn("Create Button not found");
     end;
-    wait(12000+random(0,1000));
+    wait(11000+random(0,1000));
   end;
   FreeBitmap(CreateButton);
 end.
+
