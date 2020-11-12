@@ -45,6 +45,8 @@ StuddedLeatherPants : Int32;
 StuddedLeatherSleeve : Int32;
 LeatherCap : Int32;
 LeatherBarding : Int32;
+SmallChest : Int32;
+SmallChestHighlighted : Int32;
 
 foundInventoryTitle : Boolean;
 foundToolBeltLeather : Boolean;
@@ -109,7 +111,17 @@ SkillsFile : Integer;
 
 RecentSkillsString : String;
 
-LastLockpicked : UInt64;
+LastLockpicked : TDateTime;
+
+LockpickingSkillGainedPos : Integer;
+
+TimeOfLockpickingString : String;
+
+HourTemp, MinTemp, SecTemp, MilliSecTemp : Uint16;
+
+MinutesSinceLockpicked : Integer;
+
+FoundSmallChest : Boolean;
 
 
 begin
@@ -164,7 +176,8 @@ begin
   StuddedLeatherSleeve := LoadBitmap(BitmapsFolder + "StuddedLeatherSleeve.bmp");
   LeatherCap := LoadBitmap(BitmapsFolder + "LeatherCap.bmp");
   LeatherBarding := LoadBitmap(BitmapsFolder + "leatherBarding.bmp");
-
+  SmallChest := LoadBitmap(BitmapsFolder + "SmallChest.bmp");
+  SmallChestHighlighted := LoadBitmap(BitmapsFolder + "SmallChestHighlighted.bmp");
 
 
 
@@ -180,16 +193,33 @@ begin
     WriteLn("Skills file not opening, terminating script");
     TerminateScript();
   end;
-  SetFileCharPointer(SkillsFile, -400, 2); //set seek to certain number before end
-  ReadFileString(SkillsFile, RecentSkillsString, 400);
+  SetFileCharPointer(SkillsFile, -1000, 2); //set seek to certain number before end
+  ReadFileString(SkillsFile, RecentSkillsString, 1000);
   WriteLn(RecentSkillsString);
-
-
+  LockpickingSkillGainedPos := pos('Lock picking',RecentSkillsString);
+  if LockpickingSkillGainedPos < 1 then
+  begin
+    TimeOfLockpickingString := "00:00:00";
+  end else
+  begin
+    TimeOfLockpickingString := Copy(RecentSkillsString, LockpickingSkillGainedPos - 10, 8);
+  end;
+  LastLockpicked := StrToTime(TimeOfLockpickingString);
+  WriteLn(TimeToStr(Now() - LastLockpicked));
 
   i := 0;
   waterCounter := 1;
   while true do
   begin
+    DecodeTime(Now() - LastLockpicked, HourTemp, MinTemp, SecTemp, MilliSecTemp);
+    MinutesSinceLockpicked := HourTemp * 60 + MinTemp;
+
+    if MinutesSinceLockpicked > 9 then
+    begin
+
+    end;
+
+
     if waterCounter mod 90 = 0 then
     begin
       waterCounter := random(0,5);
