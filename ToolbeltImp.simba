@@ -47,6 +47,7 @@ LeatherCap : Int32;
 LeatherBarding : Int32;
 SmallChest : Int32;
 SmallChestHighlighted : Int32;
+PickLock : Int32;
 
 foundInventoryTitle : Boolean;
 foundToolBeltLeather : Boolean;
@@ -95,6 +96,12 @@ yDrink : Integer;
 xQLTitle : Integer;
 yQLTitle : Integer;
 
+xSmallChest : Integer;
+ySmallChest : Integer;
+
+xPickLock : Integer;
+yPickLock : Integer;
+
 clientWidth : Integer;
 clientHeight : Integer;
 
@@ -122,6 +129,8 @@ HourTemp, MinTemp, SecTemp, MilliSecTemp : Uint16;
 MinutesSinceLockpicked : Integer;
 
 FoundSmallChest : Boolean;
+FoundPickLock : Boolean;
+HasLockpickingTimerSet : Boolean;
 
 
 begin
@@ -178,45 +187,74 @@ begin
   LeatherBarding := LoadBitmap(BitmapsFolder + "leatherBarding.bmp");
   SmallChest := LoadBitmap(BitmapsFolder + "SmallChest.bmp");
   SmallChestHighlighted := LoadBitmap(BitmapsFolder + "SmallChestHighlighted.bmp");
+  PickLock := LoadBitmap(BitmapsFolder + "PickLock.bmp");
 
 
-
+  HasLockpickingTimerSet := false;
   wait(500);
   MoveMouse(110,810);
   wait(500);
   ClickMouse(110,810,mouse_Left);
   wait(1000);
   WriteLn(WurmLogsFolder + "_Skills.2020-11.txt");
-  SkillsFile := OpenFile(WurmLogsFolder + "_Skills.2020-11.txt", true);
-  if SkillsFile = -1 then
-  begin
-    WriteLn("Skills file not opening, terminating script");
-    TerminateScript();
-  end;
-  SetFileCharPointer(SkillsFile, -1000, 2); //set seek to certain number before end
-  ReadFileString(SkillsFile, RecentSkillsString, 1000);
-  WriteLn(RecentSkillsString);
-  LockpickingSkillGainedPos := pos('Lock picking',RecentSkillsString);
-  if LockpickingSkillGainedPos < 1 then
-  begin
-    TimeOfLockpickingString := "00:00:00";
-  end else
-  begin
-    TimeOfLockpickingString := Copy(RecentSkillsString, LockpickingSkillGainedPos - 10, 8);
-  end;
-  LastLockpicked := StrToTime(TimeOfLockpickingString);
-  WriteLn(TimeToStr(Now() - LastLockpicked));
+
+
 
   i := 0;
   waterCounter := 1;
   while true do
   begin
+    SkillsFile := OpenFile(WurmLogsFolder + "_Skills.2020-11.txt", true);
+    if SkillsFile = -1 then
+    begin
+      WriteLn("Skills file not opening, terminating script");
+      TerminateScript();
+    end;
+    SetFileCharPointer(SkillsFile, -400, 2); //set seek to certain number before end
+    ReadFileString(SkillsFile, RecentSkillsString, 400);
+    WriteLn(RecentSkillsString);
+    LockpickingSkillGainedPos := pos('Lock picking',RecentSkillsString);
+    if LockpickingSkillGainedPos < 1 then
+    begin
+      if NOT HasLockPickingTimerSet then
+      begin
+        TimeOfLockpickingString := "00:00:00";
+      end;
+    end else
+    begin
+      TimeOfLockpickingString := Copy(RecentSkillsString, LockpickingSkillGainedPos - 10, 8);
+    end;
+    LastLockpicked := StrToTime(TimeOfLockpickingString);
+    HasLockpickingTimerSet := true;
+    WriteLn(TimeToStr(Now() - LastLockpicked));
+    CloseFile(SkillsFile);
     DecodeTime(Now() - LastLockpicked, HourTemp, MinTemp, SecTemp, MilliSecTemp);
     MinutesSinceLockpicked := HourTemp * 60 + MinTemp;
 
     if MinutesSinceLockpicked > 9 then
     begin
-
+      FoundSmallChest := FindBitmapToleranceIn(SmallChest, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 5);
+      if NOT FoundSmallChest then
+      begin
+        FoundSmallChest := FindBitmapToleranceIn(SmallChestHighlighted, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 5);
+      end;
+      if FoundSmallChest then
+      begin
+        SendKeys("6", 100, 100);
+        wait(1000 + random(0,500));
+        MoveMouse(xSmallChest + random(0,5), ySmallChest);
+        wait(500);
+        ClickMouse(xSmallChest + random(0,5), ySmallChest, mouse_Right);
+        wait(1000 + random(0,500));
+        FoundPickLock := FindBitmapToleranceIn(PickLock, xPickLock, yPickLock, 0, 0, clientWidth, clientHeight, 5);
+        if FoundPickLock then
+        begin
+          MoveMouse(xPickLock + random(0,5), yPickLock);
+          wait(500);
+          ClickMouse(xPickLock + random(0,5), yPickLock, mouse_Left);
+          wait(2000 + random(0,500));
+        end;
+      end;
     end;
 
 
