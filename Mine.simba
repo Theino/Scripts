@@ -1,0 +1,44 @@
+program new;
+
+const
+UsingLinux := False;
+
+var
+BitmapsFolderLinux := "Scripts/WurmBitmaps/";
+BitmapsFolderWindows := "Scripts\WurmBitmaps\";
+
+CreateButton : Int32;
+ContinueButton : Int32;
+
+BitmapsFolder : String;
+
+
+xClickRand : integer;
+yClickRand : integer;
+xCreateBtn : integer;
+yCreateBtn : integer;
+foundBitmapCreate := False;
+foundBitmapContinue := False;
+
+
+begin
+
+  if UsingLinux then
+  begin
+    BitmapsFolder := BitmapsFolderLinux;
+  end else
+  begin
+    BitmapsFolder := BitmapsFolderWindows;
+  end;
+
+  wait(2000);
+  while true do
+  begin
+    MoveMouse(400,400);
+    wait(500);
+      SendKeys("f", 100, 100);
+    wait(16000+random(0,1000));
+  end;
+  FreeBitmap(CreateButton);
+end.
+

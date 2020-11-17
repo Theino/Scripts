@@ -210,11 +210,11 @@ begin
       WriteLn("Skills file not opening, terminating script");
       TerminateScript();
     end;
-    SetFileCharPointer(SkillsFile, -400, 2); //set seek to certain number before end
-    ReadFileString(SkillsFile, RecentSkillsString, 400);
+    SetFileCharPointer(SkillsFile, -500, 2); //set seek to certain number before end
+    ReadFileString(SkillsFile, RecentSkillsString, 500);
     WriteLn(RecentSkillsString);
     LockpickingSkillGainedPos := pos('Lock picking',RecentSkillsString);
-    if LockpickingSkillGainedPos < 1 then
+    if LockpickingSkillGainedPos < 11 then
     begin
       if NOT HasLockPickingTimerSet then
       begin
@@ -224,7 +224,7 @@ begin
     begin
       TimeOfLockpickingString := Copy(RecentSkillsString, LockpickingSkillGainedPos - 10, 8);
     end;
-    LastLockpicked := StrToTime(TimeOfLockpickingString);
+    LastLockpicked :=  StrToTime(TimeOfLockpickingString);
     HasLockpickingTimerSet := true;
     WriteLn(TimeToStr(Now() - LastLockpicked));
     CloseFile(SkillsFile);
@@ -238,21 +238,34 @@ begin
       begin
         FoundSmallChest := FindBitmapToleranceIn(SmallChestHighlighted, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 5);
       end;
+      wait(500);
+      FoundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+      FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      WriteLn("Waiting: Stamina Found ", FoundFirstHalfOfStamina, " action bar ", FoundActiveActionBar);
+      while (NOT FoundFirstHalfOfStamina) OR FoundActiveActionBar do
+      begin
+        WriteLn("Waiting: Stamina Found ", FoundFirstHalfOfStamina, " action bar ", FoundActiveActionBar);
+        wait(500);
+        FoundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+        FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      end;
       if FoundSmallChest then
       begin
+        wait(3000 + random(0,500));
         SendKeys("6", 100, 100);
         wait(1000 + random(0,500));
         MoveMouse(xSmallChest + random(0,5), ySmallChest);
         wait(500);
         ClickMouse(xSmallChest + random(0,5), ySmallChest, mouse_Right);
-        wait(1000 + random(0,500));
-        FoundPickLock := FindBitmapToleranceIn(PickLock, xPickLock, yPickLock, 0, 0, clientWidth, clientHeight, 5);
+        wait(2000 + random(0,500));
+        FoundPickLock := FindBitmapToleranceIn(PickLock, xPickLock, yPickLock, 0, 0, clientWidth, clientHeight, 15);
         if FoundPickLock then
         begin
           MoveMouse(xPickLock + random(0,5), yPickLock);
           wait(500);
           ClickMouse(xPickLock + random(0,5), yPickLock, mouse_Left);
           wait(2000 + random(0,500));
+          MoveMouse(200,200);
         end;
       end;
     end;
