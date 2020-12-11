@@ -2,6 +2,8 @@ program new;
 
 const
 UsingLinux := False;
+TripleClick := True;
+WaitTime := 9000;
 
 var
 BitmapsFolderLinux := "Scripts/WurmBitmaps/";
@@ -46,11 +48,25 @@ begin
       MoveMouse(xClickRand,yClickRand);
       wait(50);
       ClickMouse(xClickRand,yClickRand,mouse_Left);
+      if(TripleClick) then
+      begin
+        wait(500);
+        ClickMouse(xClickRand,yClickRand,mouse_Left);
+        wait(500);
+        ClickMouse(xClickRand,yClickRand,mouse_Left);
+        wait(500);
+      end;
     end else
     begin
       WriteLn("Create Button not found");
     end;
-    wait(11000+random(0,1000));
+    if(TripleClick) then
+    begin
+      wait(WaitTime*3 + random(0,1000));
+    end else
+    begin
+      wait(WaitTime+random(0,1000));
+    end;
   end;
   FreeBitmap(CreateButton);
 end.
