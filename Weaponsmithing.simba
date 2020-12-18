@@ -1,0 +1,18 @@
+program new;
+const
+UsingLinux := False;
+
+var
+
+BitmapsFolderLinux := "Scripts/WurmBitmaps/";
+BitmapsFolderWindows := "Scripts\WurmBitmaps\";
+
+WurmLogsFolderWindows := "C:\Users\Theino\wurm\players\Usmaan\logs\";
+WurmLogsFolderLinux := "";
+
+BitmapsFolder : String;
+WurmLogsFolder : String;
+
+
+begin
+end.

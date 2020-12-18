@@ -40,11 +40,11 @@ LeatherBelt : Int32;
 Drink : Int32;
 WaterHighlighted : Int32;
 Saddle : Int32;
-StuddedLeatherBoot : Int32;
-StuddedLeatherGlove : Int32;
-StuddedLeatherJacket : Int32;
-StuddedLeatherPants : Int32;
-StuddedLeatherSleeve : Int32;
+LeatherBoot : Int32;
+LeatherGlove : Int32;
+LeatherJacket : Int32;
+LeatherPants : Int32;
+LeatherSleeve : Int32;
 LeatherCap : Int32;
 LeatherBarding : Int32;
 SmallChest : Int32;
@@ -191,11 +191,11 @@ begin
   Drink := LoadBitmap(BitmapsFolder + "Drink.bmp");
   WaterHighlighted := LoadBitmap(BitmapsFolder + "WaterHighlighted.bmp");
   Saddle := LoadBitmap(BitmapsFolder + "Saddle.bmp");
-  StuddedLeatherBoot := LoadBitmap(BitmapsFolder + "StuddedLeatherBoot.bmp");
-  StuddedLeatherGlove := LoadBitmap(BitmapsFolder + "StuddedLeatherGlove.bmp");
-  StuddedLeatherJacket := LoadBitmap(BitmapsFolder + "StuddedLeatherJacket.bmp");
-  StuddedLeatherPants := LoadBitmap(BitmapsFolder + "StuddedLeatherPants.bmp");
-  StuddedLeatherSleeve := LoadBitmap(BitmapsFolder + "StuddedLeatherSleeve.bmp");
+  LeatherBoot := LoadBitmap(BitmapsFolder + "LeatherBoot.bmp");
+  LeatherGlove := LoadBitmap(BitmapsFolder + "LeatherGlove.bmp");
+  LeatherJacket := LoadBitmap(BitmapsFolder + "LeatherJacket.bmp");
+  LeatherPants := LoadBitmap(BitmapsFolder + "LeatherPants.bmp");
+  LeatherSleeve := LoadBitmap(BitmapsFolder + "LeatherSleeve.bmp");
   LeatherCap := LoadBitmap(BitmapsFolder + "LeatherCap.bmp");
   LeatherBarding := LoadBitmap(BitmapsFolder + "leatherBarding.bmp");
   SmallChest := LoadBitmap(BitmapsFolder + "SmallChest.bmp");
@@ -403,7 +403,7 @@ begin
           wait(1000 + random(0,100));
           SendKeys("1" + chr(13), 100, 100);
           wait(1000 + random(0,600));
-          if FindBitmapToleranceIn(Leather, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5) AND FindBitmapToleranceIn(StartOfToolBelt, xToolBeltLocation, yToolBeltLocation, 0, 0, clientWidth, clientHeight, 5)  then
+          if FindBitmapToleranceIn(Leather, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 10) OR FindBitmapToleranceIn(StartOfToolBelt, xToolBeltLocation, yToolBeltLocation, 0, 0, clientWidth, clientHeight, 10)  then
           begin
             MoveMouse(xTemp,yTemp);
             wait(300 + random(0,100));
@@ -448,27 +448,27 @@ begin
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherBoot, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherBoot, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherGlove, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherGlove, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherJacket, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherJacket, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherPants, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherPants, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherSleeve, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherSleeve, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
