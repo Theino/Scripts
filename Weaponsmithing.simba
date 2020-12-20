@@ -24,16 +24,33 @@ InventoryTitle : Int32;
 ActiveActionBar : Int32;
 ZeroPointZeroZero : Int32;
 
+QLTitle : Int32;
+ForgeTitle : Int32;
+StartOfToolBelt : Int32;
+FirstHalfOfStamina : Int32;
+
+
+CurrentImpToolIcon : Int32;
+
 clientWidth : Integer;
 clientHeight : Integer;
 
 FoundActiveActionBar : Boolean;
 FoundEnergyBar : Boolean;
 
+CurrentImpToolNumber : Integer;
+
+xForgeTitleLocation : Integer;
+yForgeTitleLocation : Integer;
+
+xIconLocation : Integer;
+yIconLocation : Integer;
+
 begin
   GetClientDimensions(clientWidth, clientHeight);
   clientWidth -= 1;
   clientHeight -= 1;
+  CurrentImpToolNumber := 1;
 
   if UsingLinux then
   begin
@@ -56,6 +73,12 @@ begin
   ActiveActionBar := LoadBitmap(BitmapsFolder + "ActiveActionBar.bmp");
   ZeroPointZeroZero := LoadBitmap(BitmapsFolder + "ZeroPointZeroZero.bmp");
 
+  QLTitle := LoadBitmap(BitmapsFolder + "QLTitle.bmp");
+  ForgeTitle := LoadBitmap(BitmapsFolder + "ForgeTitle.bmp");
+  StartOfToolBelt := LoadBitmap(BitmapsFolder + "StartOfToolBelt.bmp");
+  FirstHalfOfStamina := LoadBitmap(BitmapsFolder + "FirstHalfOfStamina.bmp");
+
+
   while true do
   begin
     FoundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
@@ -65,6 +88,28 @@ begin
       wait(500);
       FoundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
       FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    end;
+    case CurrentImpToolNumber of
+      1 : CurrentImpToolIcon := HammerIcon;
+      2 : CurrentImpToolIcon := WaterIcon;
+      3 : CurrentImpToolIcon := WhetstoneIcon;
+      4 : CurrentImpToolIcon := PeltIcon;
+      5 : CurrentImpToolIcon := IronLumpIcon;
+    else
+      begin
+        WriteLn("Invalid CurrentImpToolIcon, terminating");
+        TerminateScript();
+      end;
+    end;
+
+    foundForgeTitle := FindBitmapToleranceIn(ForgeTitle, xForgeTitleLocation, yForgeTitleLocation,0,0,clientWidth,clientHeight,5);
+    if foundForgeTitle then
+    begin
+      foundIcon := FindBitmapToleranceIn(CurrentImpToolIcon, xIconLocation, yIconLocation, xForgeTitleLocation, xForgeTitleLocation, clientWidth, clientHeight,5);
+      if foundIcon then
+      begin
+
+      end;
     end;
   end;
 end.
