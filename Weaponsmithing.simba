@@ -13,6 +13,40 @@ WurmLogsFolderLinux := "";
 BitmapsFolder : String;
 WurmLogsFolder : String;
 
+HammerIcon : Int32;
+WaterIcon : Int32;
+WhetstoneIcon : Int32;
+PeltIcon : Int32;
+IronLumpIcon : Int32;
+
+FullEnergyBar : Int32;
+ToolBeltLeather : Int32;
+InventoryTitle : Int32;
+ActiveActionBar : Int32;
+ZeroPointZeroZero : Int32;
+
+clientWidth : Integer;
+clientHeight : Integer;
 
 begin
+  GetClientDimensions(clientWidth, clientHeight);
+  clientWidth -= 1;
+  clientHeight -= 1;
+
+  if UsingLinux then
+  begin
+    BitmapsFolder := BitmapsFolderLinux;
+    WurmLogsFolder := WurmLogsFolderLinux;
+  end else
+  begin
+    BitmapsFolder := BitmapsFolderWindows;
+    WurmLogsFolder := WurmLogsFolderWindows;
+  end;
+
+  HammerIcon := LoadBitmap(BitmapsFolder + "HammerIcon.bmp");
+  WaterIcon := LoadBitmap(BitmapsFolder + "WaterIcon.bmp");
+  WhetstoneIcon := LoadBitmap(BitmapsFolder + "WhetstoneIcon.bmp");
+  PeltIcon := LoadBitmap(BitmapsFolder + "PeltIcon.bmp");
+  IronLumpIcon := LoadBitmap(BitmapsFolder + "IronLumpIcon.bmp");
+
 end.

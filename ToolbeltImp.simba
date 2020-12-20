@@ -154,16 +154,10 @@ begin
   if UsingLinux then
   begin
     BitmapsFolder := BitmapsFolderLinux;
-  end else
-  begin
-    BitmapsFolder := BitmapsFolderWindows;
-  end;
-
-  if UsingLinux then
-  begin
     WurmLogsFolder := WurmLogsFolderLinux;
   end else
   begin
+    BitmapsFolder := BitmapsFolderWindows;
     WurmLogsFolder := WurmLogsFolderWindows;
   end;
 
