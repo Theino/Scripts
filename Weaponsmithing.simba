@@ -20,13 +20,15 @@ PeltIcon : Int32;
 IronLumpIcon : Int32;
 
 FullEnergyBar : Int32;
-ToolBeltLeather : Int32;
 InventoryTitle : Int32;
 ActiveActionBar : Int32;
 ZeroPointZeroZero : Int32;
 
 clientWidth : Integer;
 clientHeight : Integer;
+
+FoundActiveActionBar : Boolean;
+FoundEnergyBar : Boolean;
 
 begin
   GetClientDimensions(clientWidth, clientHeight);
@@ -49,4 +51,20 @@ begin
   PeltIcon := LoadBitmap(BitmapsFolder + "PeltIcon.bmp");
   IronLumpIcon := LoadBitmap(BitmapsFolder + "IronLumpIcon.bmp");
 
+  FullEnergyBar := LoadBitmap(BitmapsFolder + "FullEnergyBar.bmp");
+  InventoryTitle := LoadBitmap(BitmapsFolder + "InventoryTitle.bmp");
+  ActiveActionBar := LoadBitmap(BitmapsFolder + "ActiveActionBar.bmp");
+  ZeroPointZeroZero := LoadBitmap(BitmapsFolder + "ZeroPointZeroZero.bmp");
+
+  while true do
+  begin
+    FoundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+    FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    while (NOT FoundEnergyBar) OR FoundActiveActionBar do
+    begin
+      wait(500);
+      FoundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+      FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    end;
+  end;
 end.
