@@ -222,6 +222,10 @@ begin
     NoLockpickSkillGain := DoLockpicking;
     while NoLockpickSkillGain do
     begin
+      MoveMouse(300,300);
+      wait(100);
+      ClickMouse(300,300, mouse_Left);
+      wait(500);
       if FindBitmapToleranceIn(SmallPadlock, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10) then
       begin
         MoveMouse(xTemp, yTemp);
@@ -229,7 +233,9 @@ begin
         ClickMouse(xTemp, yTemp, mouse_Left);
         wait(200);
         ClickMouse(xTemp, yTemp, mouse_Left);
-        wait(700);
+        wait(400);
+        MoveMouse(300,300);
+        wait(500);
         if FindBitmapToleranceIn(SmallChest, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 10) then
         begin
           MoveMouse(xSmallChest, ySmallChest);
