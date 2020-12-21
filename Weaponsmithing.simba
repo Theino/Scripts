@@ -84,7 +84,7 @@ begin
   StartOfToolBelt := LoadBitmap(BitmapsFolder + "StartOfToolBelt.bmp");
   FirstHalfOfStamina := LoadBitmap(BitmapsFolder + "FirstHalfOfStamina.bmp");
   wait(2000);
-  CurrentImpToolNumber := 1;0
+  CurrentImpToolNumber := 5;
   while true do
   begin
     foundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
@@ -107,26 +107,44 @@ begin
         TerminateScript();
       end;
     end;
-    SendKeys(IntToStr(CurrentImpToolIcon), 20, 20);
+    SendKeys(IntToStr(CurrentImpToolNumber), 20, 20);
     foundForgeTitle := FindBitmapToleranceIn(ForgeTitle, xForgeTitleLocation, yForgeTitleLocation,0,0,clientWidth,clientHeight,5);
-    if foundForgeTitle then
+    wait(200 + random(200));
+    WriteLn(IntToStr(xForgeTitleLocation) + ", " + IntToStr(yForgeTitleLocation));
+    foundIcon := true;
+    while foundIcon do
     begin
-      foundIcon := FindBitmapToleranceIn(CurrentImpToolIcon, xIconLocation, yIconLocation, xForgeTitleLocation, xForgeTitleLocation, clientWidth, clientHeight,5);
-      if foundIcon then
+      if foundForgeTitle then
       begin
-        MoveMouse(xIconLocation, yIconLocation);
-        wait(400 + random(200));
-        SendKeys("t", 20, 20);
-        wait(1000 + random(500));
+        foundIcon := FindBitmapToleranceIn(CurrentImpToolIcon, xIconLocation, yIconLocation, xForgeTitleLocation, yForgeTitleLocation, clientWidth, clientHeight,5);
+        WriteLn(foundIcon);
+        if foundIcon then
+        begin
+          MoveMouse(xIconLocation, yIconLocation);
+          wait(400 + random(200));
+          SendKeys("rt", 20, 20);
+          wait(500 + random(500));
+          MoveMouse(100,400);
+          wait(3000);
+        end;
       end;
-    end;
-    foundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
-    foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
-    while (NOT foundFirstHalfOfStamina) OR foundActiveActionBar do
-    begin
-      wait(500);
       foundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
       foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      WriteLn("foundFirstHalfOfStamina, foundActiveActionBar");
+      WriteLn(foundFirstHalfOfStamina);
+      WriteLn(foundActiveActionBar);
+      while (NOT foundFirstHalfOfStamina) OR foundActiveActionBar do
+      begin
+        wait(500);
+        WriteLn("Waiting");
+        WriteLn("foundFirstHalfOfStamina, foundActiveActionBar");
+        WriteLn(foundFirstHalfOfStamina);
+        WriteLn(foundActiveActionBar);
+        foundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+        foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      end;
     end;
+    CurrentImpToolNumber := CurrentImpToolNumber mod 5;
+    CurrentImpToolNumber += 1;
   end;
 end.
