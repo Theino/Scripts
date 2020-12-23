@@ -1,0 +1,7 @@
+program new;
+const
+UsingLinux := False;
+var
+
+begin
+end.

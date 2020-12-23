@@ -24,7 +24,7 @@ foundBitmapContinue := False;
 
 
 begin
-  wait(1000);
+  wait(2000);
   if UsingLinux then
   begin
     BitmapsFolder := BitmapsFolderLinux;
