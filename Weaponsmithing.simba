@@ -1,0 +1,201 @@
+program new;
+const
+UsingLinux := False;
+StartingImpTool := 1;
+
+var
+
+BitmapsFolderLinux := "Scripts/WurmBitmaps/";
+BitmapsFolderWindows := "Scripts\WurmBitmaps\";
+
+WurmLogsFolderWindows := "C:\Users\Theino\wurm\players\Usmaan\logs\";
+WurmLogsFolderLinux := "";
+
+BitmapsFolder : String;
+WurmLogsFolder : String;
+
+HammerIcon : Int32;
+WaterIcon : Int32;
+WhetstoneIcon : Int32;
+PeltIcon : Int32;
+IronLumpIcon : Int32;
+
+FullEnergyBar : Int32;
+InventoryTitle : Int32;
+ActiveActionBar : Int32;
+ZeroPointZeroZero : Int32;
+BackpackTitle : Int32;
+
+QLTitle : Int32;
+ForgeTitle : Int32;
+StartOfToolBelt : Int32;
+FirstHalfOfStamina : Int32;
+
+IronLump : Int32;
+IronLumpActivated : Int32;
+
+
+CurrentImpToolIcon : Int32;
+
+clientWidth : Integer;
+clientHeight : Integer;
+
+foundActiveActionBar : Boolean;
+foundEnergyBar : Boolean;
+foundForgeTitle : Boolean;
+foundIcon : Boolean;
+foundFirstHalfOfStamina : Boolean;
+
+CurrentImpToolNumber : Integer;
+
+xForgeTitleLocation : Integer;
+yForgeTitleLocation : Integer;
+
+xIconLocation : Integer;
+yIconLocation : Integer;
+
+xInventoryLocation : Integer;
+yInventoryLocation : Integer;
+
+xBackpackLocation : Integer;
+yBackpackLocation : Integer;
+
+xTemp : Integer;
+yTemp : Integer;
+
+begin
+  GetClientDimensions(clientWidth, clientHeight);
+  clientWidth -= 1;
+  clientHeight -= 1;
+  CurrentImpToolNumber := 1;
+
+  if UsingLinux then
+  begin
+    BitmapsFolder := BitmapsFolderLinux;
+    WurmLogsFolder := WurmLogsFolderLinux;
+  end else
+  begin
+    BitmapsFolder := BitmapsFolderWindows;
+    WurmLogsFolder := WurmLogsFolderWindows;
+  end;
+
+  HammerIcon := LoadBitmap(BitmapsFolder + "HammerIcon.bmp");
+  WaterIcon := LoadBitmap(BitmapsFolder + "WaterIcon.bmp");
+  WhetstoneIcon := LoadBitmap(BitmapsFolder + "WhetstoneIcon.bmp");
+  PeltIcon := LoadBitmap(BitmapsFolder + "PeltIcon.bmp");
+  IronLumpIcon := LoadBitmap(BitmapsFolder + "IronLumpIcon.bmp");
+
+  InventoryTitle := LoadBitmap(BitmapsFolder + "InventoryTitle.bmp");
+  ActiveActionBar := LoadBitmap(BitmapsFolder + "ActiveActionBar.bmp");
+  ZeroPointZeroZero := LoadBitmap(BitmapsFolder + "ZeroPointZeroZero.bmp");
+  BackpackTitle := LoadBitmap(BitmapsFolder + "BackpackTitle.bmp");
+
+  QLTitle := LoadBitmap(BitmapsFolder + "QLTitle.bmp");
+  ForgeTitle := LoadBitmap(BitmapsFolder + "ForgeTitle.bmp");
+  FirstHalfOfStamina := LoadBitmap(BitmapsFolder + "FirstHalfOfStamina.bmp");
+
+  IronLump := LoadBitmap(BitmapsFolder + "IronLump.bmp");
+  IronLumpActivated := LoadBitmap(BitmapsFolder + "IronLumpActivated.bmp");
+  wait(2000);
+  CurrentImpToolNumber := StartingImpTool;
+  while true do
+  begin
+    foundEnergyBar := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+    foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    while (NOT foundEnergyBar) OR foundActiveActionBar do
+    begin
+      wait(500);
+      WriteLn("Waiting: foundEnergyBar, foundActiveActionBar");
+      WriteLn(foundEnergyBar);
+      WriteLn(foundActiveActionBar);
+      foundEnergyBar := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+      foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+    end;
+    WriteLn("ImpToolNumberSelection");
+    case CurrentImpToolNumber of
+      1 : CurrentImpToolIcon := HammerIcon;
+      2 : CurrentImpToolIcon := WaterIcon;
+      3 : CurrentImpToolIcon := WhetstoneIcon;
+      4 : CurrentImpToolIcon := PeltIcon;
+      5 : CurrentImpToolIcon := IronLumpIcon;
+    else
+      begin
+        WriteLn("Invalid CurrentImpToolIcon, terminating");
+        TerminateScript();
+      end;
+    end;
+    SendKeys(IntToStr(CurrentImpToolNumber), 20, 20);
+    foundForgeTitle := FindBitmapToleranceIn(ForgeTitle, xForgeTitleLocation, yForgeTitleLocation,0,0,clientWidth,clientHeight,5);
+    wait(200 + random(200));
+    WriteLn(IntToStr(xForgeTitleLocation) + ", " + IntToStr(yForgeTitleLocation));
+    foundIcon := true;
+    while foundIcon do
+    begin
+      if foundForgeTitle then
+      begin
+        foundIcon := FindBitmapToleranceIn(CurrentImpToolIcon, xIconLocation, yIconLocation, xForgeTitleLocation, yForgeTitleLocation, clientWidth, clientHeight,5);
+        WriteLn(foundIcon);
+        if foundIcon then
+        begin
+          MoveMouse(xIconLocation, yIconLocation);
+          wait(400 + random(200));
+          SendKeys("rt", 20, 20);
+          wait(500 + random(500));
+          MoveMouse(100,400);
+          wait(3000);
+        end;
+      end;
+      foundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+      foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      WriteLn("foundFirstHalfOfStamina, foundActiveActionBar");
+      WriteLn(foundFirstHalfOfStamina);
+      WriteLn(foundActiveActionBar);
+      while (NOT foundFirstHalfOfStamina) OR foundActiveActionBar do
+      begin
+        wait(500);
+        WriteLn("Waiting");
+        WriteLn("foundFirstHalfOfStamina, foundActiveActionBar");
+        WriteLn(foundFirstHalfOfStamina);
+        WriteLn(foundActiveActionBar);
+        foundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+        foundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      end;
+    end;
+    CurrentImpToolNumber := CurrentImpToolNumber mod 5;
+    CurrentImpToolNumber += 1;
+    if CurrentImpToolNumber = 5 then
+    begin
+      if FindBitmapToleranceIn(InventoryTitle, xInventoryLocation, yInventoryLocation,0,0,clientWidth,clientHeight,5) then
+      begin
+        if FindBitmapToleranceIn(IronLump, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5) then
+        begin
+          MoveMouse(xTemp,yTemp);
+          wait(100 + random(0,100));
+          HoldMouse(xTemp,yTemp,mouse_Left);
+          wait(200 + random(0,100));
+          MoveMouse(xInventoryLocation + 50, yInventoryLocation + 50);
+          wait(600 + random(0,100));
+          ReleaseMouse(xInventoryLocation + 50, yInventoryLocation + 50, mouse_Left);
+          wait(1000 + random(0,100));
+        end;
+      end;
+    end;
+    if CurrentImpToolNumber = 1 then
+    begin
+      if FindBitmapToleranceIn(BackpackTitle, xBackpackLocation, yBackpackLocation,0,0,clientWidth,clientHeight,5) then
+      begin
+        if FindBitmapToleranceIn(IronLumpActivated, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5) then
+        begin
+          MoveMouse(xTemp,yTemp);
+          wait(100 + random(0,100));
+          HoldMouse(xTemp,yTemp,mouse_Left);
+          wait(200 + random(0,100));
+          MoveMouse(xBackpackLocation + 50, yBackpackLocation + 70);
+          wait(600 + random(0,100));
+          ReleaseMouse(xBackpackLocation + 50, yBackpackLocation + 70, mouse_Left);
+          wait(1000 + random(0,100));
+        end;
+      end;
+    end;
+  end;
+end.

@@ -1,6 +1,8 @@
 program new;
 const
 UsingLinux := False;
+ToggleSleepBonus := true;
+DoLockpicking := true;
 
 
 var
@@ -8,7 +10,11 @@ var
 BitmapsFolderLinux := "Scripts/WurmBitmaps/";
 BitmapsFolderWindows := "Scripts\WurmBitmaps\";
 
+WurmLogsFolderWindows := "C:\Users\Theino\wurm\players\Usmaan\logs\";
+WurmLogsFolderLinux := "";
+
 BitmapsFolder : String;
+WurmLogsFolder : String;
 
 LeatherIcon : Int32;
 LeatherKnifeIcon : Int32;
@@ -34,12 +40,20 @@ LeatherBelt : Int32;
 Drink : Int32;
 WaterHighlighted : Int32;
 Saddle : Int32;
-StuddedLeatherBoot : Int32;
-StuddedLeatherGlove : Int32;
-StuddedLeatherJacket : Int32;
-StuddedLeatherPants : Int32;
-StuddedLeatherSleeve : Int32;
+LeatherBoot : Int32;
+LeatherGlove : Int32;
+LeatherJacket : Int32;
+LeatherPants : Int32;
+LeatherSleeve : Int32;
 LeatherCap : Int32;
+LeatherBarding : Int32;
+SmallChest : Int32;
+SmallChestHighlighted : Int32;
+PickLock : Int32;
+TextInput : Int32;
+SmallPadlock : Int32;
+AttachLock : Int32;
+
 
 foundInventoryTitle : Boolean;
 foundToolBeltLeather : Boolean;
@@ -88,6 +102,12 @@ yDrink : Integer;
 xQLTitle : Integer;
 yQLTitle : Integer;
 
+xSmallChest : Integer;
+ySmallChest : Integer;
+
+xPickLock : Integer;
+yPickLock : Integer;
+
 clientWidth : Integer;
 clientHeight : Integer;
 
@@ -99,6 +119,32 @@ FoundActiveActionBar : Boolean;
 FoundHighlightedWater : Boolean;
 FoundDrink : Boolean;
 
+EventFile : Integer;
+SkillsFile : Integer;
+
+RecentSkillsString : String;
+
+LastLockpicked : TDateTime;
+
+LockpickingSkillGainedPos : Integer;
+
+TimeOfLockpickingString : String;
+
+HourTemp, MinTemp, SecTemp, MilliSecTemp : Uint16;
+
+SecondsSinceLockpicked : Integer;
+
+FoundSmallChest : Boolean;
+FoundPickLock : Boolean;
+FoundTextInput : Boolean;
+FoundEnergyBar : Boolean;
+HasLockpickingTimerSet : Boolean;
+
+NoLockpickSkillGain : Boolean;
+SleepBonusUsing : Boolean;
+
+
+
 
 begin
   GetClientDimensions(clientWidth, clientHeight);
@@ -107,11 +153,14 @@ begin
 
   if UsingLinux then
   begin
-  BitmapsFolder := BitmapsFolderLinux;
+    BitmapsFolder := BitmapsFolderLinux;
+    WurmLogsFolder := WurmLogsFolderLinux;
   end else
   begin
     BitmapsFolder := BitmapsFolderWindows;
+    WurmLogsFolder := WurmLogsFolderWindows;
   end;
+
   LeatherIcon := LoadBitmap(BitmapsFolder + "LeatherIcon.bmp");
   LeatherKnifeIcon := LoadBitmap(BitmapsFolder + "LeatherKnifeIcon.bmp");
   MalletIcon := LoadBitmap(BitmapsFolder + "MalletIcon.bmp");
@@ -136,22 +185,178 @@ begin
   Drink := LoadBitmap(BitmapsFolder + "Drink.bmp");
   WaterHighlighted := LoadBitmap(BitmapsFolder + "WaterHighlighted.bmp");
   Saddle := LoadBitmap(BitmapsFolder + "Saddle.bmp");
-  StuddedLeatherBoot := LoadBitmap(BitmapsFolder + "StuddedLeatherBoot.bmp");
-  StuddedLeatherGlove := LoadBitmap(BitmapsFolder + "StuddedLeatherGlove.bmp");
-  StuddedLeatherJacket := LoadBitmap(BitmapsFolder + "StuddedLeatherJacket.bmp");
-  StuddedLeatherPants := LoadBitmap(BitmapsFolder + "StuddedLeatherPants.bmp");
-  StuddedLeatherSleeve := LoadBitmap(BitmapsFolder + "StuddedLeatherSleeve.bmp");
+  LeatherBoot := LoadBitmap(BitmapsFolder + "LeatherBoot.bmp");
+  LeatherGlove := LoadBitmap(BitmapsFolder + "LeatherGlove.bmp");
+  LeatherJacket := LoadBitmap(BitmapsFolder + "LeatherJacket.bmp");
+  LeatherPants := LoadBitmap(BitmapsFolder + "LeatherPants.bmp");
+  LeatherSleeve := LoadBitmap(BitmapsFolder + "LeatherSleeve.bmp");
   LeatherCap := LoadBitmap(BitmapsFolder + "LeatherCap.bmp");
+  LeatherBarding := LoadBitmap(BitmapsFolder + "leatherBarding.bmp");
+  SmallChest := LoadBitmap(BitmapsFolder + "SmallChest.bmp");
+  SmallChestHighlighted := LoadBitmap(BitmapsFolder + "SmallChestHighlighted.bmp");
+  PickLock := LoadBitmap(BitmapsFolder + "PickLock.bmp");
+  TextInput := LoadBitmap(BitmapsFolder + "TextInput.bmp");
+  SmallPadlock := LoadBitmap(BitmapsFolder + "SmallPadlock.bmp");
+  AttachLock := LoadBitmap(BitmapsFolder + "AttachLock.bmp");
 
+
+  HasLockpickingTimerSet := false;
   wait(500);
   MoveMouse(110,810);
   wait(500);
   ClickMouse(110,810,mouse_Left);
   wait(1000);
+
+
+  SleepBonusUsing := false;
   i := 0;
   waterCounter := 1;
   while true do
   begin
+    NoLockpickSkillGain := DoLockpicking;
+    while NoLockpickSkillGain do
+    begin
+      MoveMouse(300,300);
+      wait(100);
+      ClickMouse(300,300, mouse_Left);
+      wait(500);
+      if FindBitmapToleranceIn(SmallPadlock, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10) then
+      begin
+        MoveMouse(xTemp, yTemp);
+        wait(300);
+        ClickMouse(xTemp, yTemp, mouse_Left);
+        wait(200);
+        ClickMouse(xTemp, yTemp, mouse_Left);
+        wait(400);
+        MoveMouse(300,300);
+        wait(500);
+        if FindBitmapToleranceIn(SmallChest, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 10) then
+        begin
+          MoveMouse(xSmallChest, ySmallChest);
+          wait(300);
+          ClickMouse(xSmallChest, ySmallChest, mouse_Right);
+          wait(1000);
+          if FindBitmapToleranceIn(AttachLock, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10) then
+          begin
+            MoveMouse(xTemp, yTemp);
+            wait(400);
+            ClickMouse(xTemp, yTemp, mouse_Left);
+            wait(1000);
+          end;
+        end;
+      end;
+      FoundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+      FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      while (NOT FoundEnergyBar) OR FoundActiveActionBar do
+      begin
+        wait(500);
+        FoundEnergyBar := FindBitmapToleranceIn(FullEnergyBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
+        FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+      end;
+      SkillsFile := OpenFile(WurmLogsFolder + "_Skills.2020-12.txt", true);
+      if SkillsFile = -1 then
+      begin
+        WriteLn("Skills file not opening, terminating script");
+        TerminateScript();
+      end;
+      SetFileCharPointer(SkillsFile, -300, 2); //set seek to certain number before end
+      ReadFileString(SkillsFile, RecentSkillsString, 300);
+      WriteLn(RecentSkillsString);
+      LockpickingSkillGainedPos := pos('Lock picking',RecentSkillsString);
+      if LockpickingSkillGainedPos < 11 then
+      begin
+        if NOT HasLockPickingTimerSet then
+        begin
+          TimeOfLockpickingString := "00:00:00";
+        end;
+      end else
+      begin
+        TimeOfLockpickingString := Copy(RecentSkillsString, LockpickingSkillGainedPos - 10, 8);
+      end;
+      LastLockpicked :=  StrToTime(TimeOfLockpickingString);
+      WriteLn(LastLockpicked);
+      HasLockpickingTimerSet := true;
+      WriteLn(TimeToStr(Now() - LastLockpicked));
+      CloseFile(SkillsFile);
+      DecodeTime(Now() - LastLockpicked, HourTemp, MinTemp, SecTemp, MilliSecTemp);
+      SecondsSinceLockpicked := HourTemp * 3600 + MinTemp * 60 + SecTemp;
+      WriteLn(SecondsSinceLockpicked);
+      if SecondsSinceLockpicked <= 570 then //9 min 30 seconds
+      begin
+        FoundTextInput := FindBitmapToleranceIn(TextInput, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+        if FoundTextInput then
+        begin
+          if ToggleSleepBonus then
+          begin
+            if SleepBonusUsing then
+            begin
+              MoveMouse(xTemp + random(0,5), yTemp);
+              wait(500);
+              ClickMouse(xTemp + random(0,5), yTemp, mouse_Left);
+              wait(500);
+              SendKeys("/fsleep" + chr(13), 100, 100);
+              wait(500);
+              MoveMouse(xSmallChest, ySmallChest);
+              wait(500);
+              ClickMouse(xSmallChest, ySmallChest, mouse_Left);
+              wait(500);
+              MoveMouse(200,200);
+              SleepBonusUsing := NOT SleepBonusUsing;
+            end;
+          end;
+        end;
+        NoLockpickSkillGain := false;
+      end else
+      begin
+
+        FoundSmallChest := FindBitmapToleranceIn(SmallChest, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 5);
+        if NOT FoundSmallChest then
+        begin
+          FoundSmallChest := FindBitmapToleranceIn(SmallChestHighlighted, xSmallChest, ySmallChest, 0, 0, clientWidth, clientHeight, 5);
+        end;
+        if FoundSmallChest then
+        begin
+          SendKeys("6", 100, 100);
+          wait(500 + random(0,500));
+          MoveMouse(xSmallChest + random(0,5), ySmallChest);
+          wait(500);
+          ClickMouse(xSmallChest + random(0,5), ySmallChest, mouse_Right);
+          wait(2000 + random(0,500));
+          FoundPickLock := FindBitmapToleranceIn(PickLock, xPickLock, yPickLock, 0, 0, clientWidth, clientHeight, 15);
+          if FoundPickLock then
+          begin
+            MoveMouse(xPickLock + random(0,5), yPickLock);
+            wait(500);
+            ClickMouse(xPickLock + random(0,5), yPickLock, mouse_Left);
+            wait(20000 + random(0,500));
+            MoveMouse(200,200);
+          end;
+          FoundTextInput := FindBitmapToleranceIn(TextInput, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
+          if FoundTextInput then
+          begin
+            if ToggleSleepBonus then
+            begin
+              if NOT SleepBonusUsing then
+              begin
+                MoveMouse(xTemp + random(0,5), yTemp);
+                wait(500);
+                ClickMouse(xTemp + random(0,5), yTemp, mouse_Left);
+                wait(500);
+                SendKeys("/fsleep" + chr(13), 100, 100);
+                wait(500);
+                MoveMouse(xSmallChest, ySmallChest);
+                wait(500);
+                ClickMouse(xSmallChest, ySmallChest, mouse_Left);
+                wait(500);
+                MoveMouse(200,200);
+                SleepBonusUsing := NOT SleepBonusUsing;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+
     if waterCounter mod 90 = 0 then
     begin
       waterCounter := random(0,5);
@@ -162,12 +367,12 @@ begin
         wait(500);
         ClickMouse(xWater + random(0,5), yWater, mouse_Right);
         wait(1500 + random(0, 500));
-        FoundDrink := FindBitmapToleranceIn(Drink, xDrink, yDrink, 0, 0, clientWidth, clientHeight, 5);
+        FoundDrink := FindBitmapToleranceIn(Drink, xDrink, yDrink, 0, 0, clientWidth, clientHeight, 10);
         if FoundDrink then
         begin
-          MoveMouse(xDrink + random(0,5), yDrink);
+          MoveMouse(xDrink + 20+ random(0,5), yDrink);
           wait(500);
-          ClickMouse(xDrink + random(0,5), yDrink, mouse_Left);
+          ClickMouse(xDrink + 5 + random(0,5), yDrink, mouse_Left);
           wait(4000 + random(0, 1000));
         end else
         begin
@@ -184,46 +389,39 @@ begin
     foundInventoryTitle := FindBitmapToleranceIn(InventoryTitle, xInventoryLocation, yInventoryLocation,0,0,clientWidth,clientHeight,5);
     if foundInventoryTitle then
     begin
-      if (NOT FindBitmapToleranceIn(LeatherHideOnToolBeltHighlighted, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5)) AND (NOT FindBitmapToleranceIn(LeatherHideOnToolBelt, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5)) then
+      if (NOT FindBitmapToleranceIn(LeatherHideOnToolBeltHighlighted, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 40)) AND (NOT FindBitmapToleranceIn(LeatherHideOnToolBelt, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 40)) then
       begin
-        if FindBitmapToleranceIn(BulkStorageBinTitle,xBulkStorageBinLocation,yBulkStorageBinLocation,0,0,clientWidth,clientHeight,5) then
+        if FindBitmapToleranceIn(HighlightedLeatherStack, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 5) then
         begin
-          if FindBitmapToleranceIn(HighlightedLeatherStack, xTemp, yTemp, xBulkStorageBinLocation, yBulkStorageBinLocation, xBulkStorageBinLocation + 300, clientHeight, 5) then
+          MoveMouse(xTemp,yTemp);
+          wait(100 + random(0,100));
+          HoldMouse(xTemp,yTemp,mouse_Left);
+          wait(200 + random(0,100));
+          MoveMouse(xInventoryLocation + 50, yInventoryLocation + 50);
+          wait(600 + random(0,100));
+          ReleaseMouse(xInventoryLocation + 50, yInventoryLocation + 50, mouse_Left);
+          wait(1000 + random(0,100));
+          SendKeys("1" + chr(13), 100, 100);
+          wait(1000 + random(0,600));
+          if FindBitmapToleranceIn(Leather, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 10) OR FindBitmapToleranceIn(StartOfToolBelt, xToolBeltLocation, yToolBeltLocation, 0, 0, clientWidth, clientHeight, 10)  then
           begin
             MoveMouse(xTemp,yTemp);
-            wait(100 + random(0,100));
+            wait(300 + random(0,100));
             HoldMouse(xTemp,yTemp,mouse_Left);
-            wait(200 + random(0,100));
-            MoveMouse(xInventoryLocation + 50, yInventoryLocation + 60);
-            wait(600 + random(0,100));
-            ReleaseMouse(xInventoryLocation + 50, yInventoryLocation + 65, mouse_Left);
-            wait(1000 + random(0,100));
-            SendKeys("1" + chr(13), 100, 100);
-            wait(1000 + random(0,600));
-            if FindBitmapToleranceIn(Leather, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5) AND FindBitmapToleranceIn(StartOfToolBelt, xToolBeltLocation, yToolBeltLocation, 0, 0, clientWidth, clientHeight, 5)  then
-            begin
-              MoveMouse(xTemp,yTemp);
-              wait(300 + random(0,100));
-              HoldMouse(xTemp,yTemp,mouse_Left);
-              wait(300 + random(0,100));
-              WriteLn("ToolBeltStart is ", xToolBeltLocation, " ", yToolBeltLocation);
-              MoveMouse(xToolBeltLocation + 190, yToolBeltLocation + 10);
-              wait(300 + random(0, 100));
-              ReleaseMouse(xToolBeltLocation + 190, yToolBeltLocation + 10, mouse_Left);
-              wait(1000);
-            end else
-            begin
-              WriteLn("Leather or toolbelt not found, exiting");
-              TerminateScript();
-            end;
+            wait(300 + random(0,100));
+            WriteLn("ToolBeltStart is ", xToolBeltLocation, " ", yToolBeltLocation);
+            MoveMouse(xToolBeltLocation + 190, yToolBeltLocation + 10);
+            wait(300 + random(0, 100));
+            ReleaseMouse(xToolBeltLocation + 190, yToolBeltLocation + 10, mouse_Left);
+            wait(1000);
           end else
           begin
-            WriteLn("Highlighted leather stack not found, exiting");
+            WriteLn("Leather or toolbelt not found, exiting");
             TerminateScript();
           end;
         end else
         begin
-          WriteLn("Bulk storage bin title not found, exiting");
+          WriteLn("Highlighted leather stack not found, exiting");
           TerminateScript();
         end;
       end;
@@ -232,7 +430,7 @@ begin
       foundToolBeltLeather := FindBitmapToleranceIn(ToolBeltLeather, xToolBeltLeatherLocation, yToolBeltLeatherLocation, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5) OR foundToolBeltLeatherRare OR foundLeatherBelt;
 
 
-      if NOT foundToolBeltLeatherRare then
+      if NOT foundToolBeltLeather then
         yToolBeltLeatherLocation := 9000;
 
       foundTemp := FindBitmapToleranceIn(Saddle, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
@@ -250,27 +448,27 @@ begin
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherBoot, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherBoot, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherGlove, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherGlove, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherJacket, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherJacket, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherPants, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherPants, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
-      foundTemp := FindBitmapToleranceIn(StuddedLeatherSleeve, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      foundTemp := FindBitmapToleranceIn(LeatherSleeve, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
       if foundTemp then
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
@@ -280,6 +478,10 @@ begin
         if yTemp < yToolBeltLeatherLocation then
           yToolBeltLeatherLocation := yTemp;
 
+      foundTemp := FindBitmapToleranceIn(LeatherBarding, xTemp, yTemp, xInventoryLocation, yInventoryLocation, clientWidth, clientHeight, 5);
+      if foundTemp then
+        if yTemp < yToolBeltLeatherLocation then
+          yToolBeltLeatherLocation := yTemp;
 
       if foundToolBeltLeather then
       begin
@@ -331,10 +533,8 @@ begin
     end;
     FoundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
     FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
-    WriteLn("Waiting: Stamina Found ", FoundFirstHalfOfStamina, " action bar ", FoundActiveActionBar);
     while (NOT FoundFirstHalfOfStamina) OR FoundActiveActionBar do
     begin
-      WriteLn("Waiting: Stamina Found ", FoundFirstHalfOfStamina, " action bar ", FoundActiveActionBar);
       wait(500);
       FoundFirstHalfOfStamina := FindBitmapToleranceIn(FirstHalfOfStamina, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 20);
       FoundActiveActionBar := FindBitmapToleranceIn(ActiveActionBar, xTemp, yTemp, 0, 0, clientWidth, clientHeight, 10);
